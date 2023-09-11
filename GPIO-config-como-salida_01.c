@@ -26,7 +26,7 @@ Tenemos que escribir dos secuencias distintas de luces.
 #define LED_COUNT 10
 
 void configGPIO();
-void delay(uint32_t time);
+void delay(uint32_t count);
 void secuencia1();
 void secuencia2();
 
@@ -45,7 +45,7 @@ void configGPIO(void){
     LPC_GPIO0->FIODIR |= (0x03FF); //Pines [9:0] del PORT0 como salida 
 }
 
-void delay(uint32_t time){
+void delay(uint32_t count){
     while(count --);
 }
 
