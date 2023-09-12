@@ -24,16 +24,11 @@ int main(void){
     return 0;
 }
 
-void EINT3_IRQHandler(void){
-    //debounce treating
-    if(LPC_GPIOINT->IO2IntStatR ) //TODO: Como revisar que bit es
-    {   
+void EINT3_IRQHandler(){
+    if(LPC_GPIOINT->IO2IntStatR & (0x1)) {   
         LPC_GPIO2->FIOSET |= b'010011010';
-    }
-    else
-    {
-        // mando el otro xdxd
-
+    }else{
+        LPCGPIO2->FIOSET  |= b'011100110';
     }
 }
 
@@ -48,5 +43,7 @@ void configGPIO(){
 void configGPIOInterrupt(void){
     LPC_GPIOINT->IO2IntEnR |= (0x1); //P2.0 interrumpe por flanco de subida
     LPC_GPIOINT->IO2IntEnF |= (0x2); //P2.1 interrumpe por flanco de bajada
+    NVIC_EnableIRQ(EINT3_IRQn); //Habilito la interrupcion por GPIO
+    
 }
 
