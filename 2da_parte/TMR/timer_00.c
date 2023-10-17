@@ -2,6 +2,7 @@
 #include "lpc_17xx.h"
 #endif
 
+#incluede "lpc17xx_clkpwr.h"
 #include "lpc17xx_pinsel.h"
 #include "lpc17xx_exti.h"
 #include "lpc17xx_gpio.h"
@@ -87,4 +88,24 @@ configTIMER0(){
     TIM_ConfigMatch(LPC_TIM0, &match);
     TIM_Cmd(LPC_TIM0, ENABLE); //Habilita el timer counter y prescale counter
     NVIC_EnableIRQ(TIEMR0_IRQn);
+}
+
+void TIMER0_IRQHandler(){
+    if(TIM_GetIntStatus(LPC_TIM0, 0)){ //Pregunto por el flag de interrupcion
+        if(GPIO_ReadValue(2) & PIN_4){
+            GPIO_ClearValue(2, PIN_4);
+        }else{
+            GPIO_SetValue(2, PIN_4);
+        }
+        TIM_ClearIntPending(LPC_TIM0, 0); //Limpio el flag de interrupcion
+    }
+}
+
+void EINT0_IRQHandler(){
+    pclktimer0 ++;
+    if(pclktimer0 == 4){
+        pclktimer0 = 0;
+    }
+    CLKPWR_SetPCLKDiv(CLKPWR_PCLKSEL_TIMER0, pclktimer0);
+    EXTI_ClearFlag(0);
 }
